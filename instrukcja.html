@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Nova Partner — uruchomienie krok po kroku</title>
+
+<style>
+  :root {
+    --ground: #f4f8fc; --surface: #ffffff; --surface-2: #eef4fa; --line: #d7e3ef;
+    --ink: #16233a; --ink-soft: #5a6b85; --navy: #2a487d; --blue: #3c79e1;
+    --safe-bg: #e7f4ef; --safe-line: #b3ddcb; --safe-ink: #14614a;
+    --warn-bg: #fdf3e2; --warn-line: #f0d6a6; --warn-ink: #8a5a08;
+    --act-bg: #eaf1fe; --act-line: #b9d1f7; --act-ink: #234c93;
+    --code-bg: #10192a; --code-ink: #d5e2f2; --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0c1320; --surface: #141e2d; --surface-2: #1a2637; --line: #2a3a52;
+      --ink: #e9eff7; --ink-soft: #9aabc4; --navy: #8fb3ec; --blue: #6c9bf0;
+      --safe-bg: #122c26; --safe-line: #24564a; --safe-ink: #7fd6b8;
+      --warn-bg: #2e2413; --warn-line: #5c4720; --warn-ink: #e5b866;
+      --act-bg: #16233c; --act-line: #2c4675; --act-ink: #9cc0f5;
+      --code-bg: #080e18; --code-ink: #cddcf0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0c1320; --surface: #141e2d; --surface-2: #1a2637; --line: #2a3a52;
+    --ink: #e9eff7; --ink-soft: #9aabc4; --navy: #8fb3ec; --blue: #6c9bf0;
+    --safe-bg: #122c26; --safe-line: #24564a; --safe-ink: #7fd6b8;
+    --warn-bg: #2e2413; --warn-line: #5c4720; --warn-ink: #e5b866;
+    --act-bg: #16233c; --act-line: #2c4675; --act-ink: #9cc0f5;
+    --code-bg: #080e18; --code-ink: #cddcf0;
+  }
+  :root[data-theme="light"] {
+    --ground: #f4f8fc; --surface: #ffffff; --surface-2: #eef4fa; --line: #d7e3ef;
+    --ink: #16233a; --ink-soft: #5a6b85; --navy: #2a487d; --blue: #3c79e1;
+    --safe-bg: #e7f4ef; --safe-line: #b3ddcb; --safe-ink: #14614a;
+    --warn-bg: #fdf3e2; --warn-line: #f0d6a6; --warn-ink: #8a5a08;
+    --act-bg: #eaf1fe; --act-line: #b9d1f7; --act-ink: #234c93;
+    --code-bg: #10192a; --code-ink: #d5e2f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 16.5px; line-height: 1.62; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 28px 18px 80px; }
+  .masthead { padding: 6px 0 22px; border-bottom: 2px solid var(--navy); margin-bottom: 10px; }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--blue); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(26px, 6vw, 38px); line-height: 1.12; margin: 0 0 12px;
+    font-weight: 800; letter-spacing: -0.02em; color: var(--navy); text-wrap: balance;
+  }
+  .standfirst { font-size: 17.5px; color: var(--ink-soft); margin: 0; }
+  h2 {
+    font-size: clamp(20px, 4.6vw, 25px); font-weight: 800; letter-spacing: -0.015em;
+    color: var(--navy); margin: 46px 0 6px; text-wrap: balance;
+    padding-top: 10px; border-top: 1px solid var(--line);
+  }
+  h2 .who {
+    display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 4px;
+  }
+  h2 + .sub { color: var(--ink-soft); margin: 0 0 16px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 22px 0 8px; color: var(--ink); }
+  p { margin: 0 0 14px; }
+  strong { font-weight: 700; }
+  a { color: var(--blue); }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 8px; }
+
+  /* "Dlaczego tak" - uzasadnienie kroku. Cel: nikt nie wykonuje polecen
+     w ciemno; wiadomo, co dany krok zalatwia i co grozi przy pominieciu. */
+  .why {
+    border-left: 3px solid var(--blue); background: #f2f6fd;
+    padding: 10px 14px; margin: 0 0 14px; border-radius: 0 8px 8px 0;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .why b { color: var(--ink); font-weight: 700; }
+
+  .panel {
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: var(--radius); padding: 18px 18px 6px; margin: 18px 0;
+  }
+  .panel > :last-child { margin-bottom: 12px; }
+  .panel.safe { background: var(--safe-bg); border-color: var(--safe-line); }
+  .panel.safe .panel-label { color: var(--safe-ink); }
+  .panel.warn { background: var(--warn-bg); border-color: var(--warn-line); }
+  .panel.warn .panel-label { color: var(--warn-ink); }
+  .panel.act { background: var(--act-bg); border-color: var(--act-line); border-width: 2px; }
+  .panel.act .panel-label { color: var(--act-ink); }
+  .panel-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; margin: 0 0 8px; color: var(--blue);
+  }
+
+  .done { display: grid; gap: 8px; margin: 0 0 4px; }
+  .done div { padding-left: 26px; position: relative; }
+  .done div::before {
+    content: "✓"; position: absolute; left: 0; top: 0;
+    font-weight: 800; color: var(--safe-ink);
+  }
+
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: krok; }
+  ol.steps > li {
+    counter-increment: krok; position: relative;
+    padding: 0 0 24px 52px; margin: 0;
+    border-left: 2px solid var(--line); margin-left: 15px;
+  }
+  ol.steps > li:last-child { border-left-color: transparent; padding-bottom: 4px; }
+  ol.steps > li::before {
+    content: counter(krok);
+    position: absolute; left: -16px; top: -2px;
+    width: 31px; height: 31px; border-radius: 50%;
+    background: var(--navy); color: #fff;
+    font-size: 14.5px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 2px 0 6px; }
+  ol.steps p { margin: 0 0 10px; }
+
+  .clickpath {
+    display: inline-block; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 2px 10px; font-size: 14px; font-weight: 600;
+    color: var(--navy); margin: 1px 0;
+  }
+
+  code {
+    font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 0.88em;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px;
+    overflow-wrap: anywhere;
+  }
+  pre {
+    margin: 12px 0; background: var(--code-bg); color: var(--code-ink);
+    font-family: ui-monospace, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+    border-radius: var(--radius); padding: 14px 16px; overflow-x: auto;
+  }
+  kbd {
+    font-family: ui-monospace, Consolas, monospace; font-size: 0.85em; font-weight: 700;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-bottom-width: 2px; border-radius: 5px; padding: 2px 7px; white-space: nowrap;
+  }
+
+  dl.problems { margin: 0; }
+  dl.problems dt {
+    font-weight: 700; color: var(--warn-ink); margin: 16px 0 5px;
+    padding-left: 20px; position: relative;
+  }
+  dl.problems dt::before {
+    content: "!"; position: absolute; left: 0; top: 0;
+    font-weight: 800; color: var(--warn-ink);
+  }
+  dl.problems dd { margin: 0 0 4px; padding-left: 20px; }
+
+  .tblwrap { overflow-x: auto; margin: 14px 0; border-radius: var(--radius); border: 1px solid var(--line); }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; background: var(--surface); }
+  th, td { text-align: left; padding: 9px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 700; color: var(--navy); font-size: 12.5px;
+       letter-spacing: 0.04em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: none; }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 40px 0 0; }
+  .foot { color: var(--ink-soft); font-size: 14px; margin-top: 18px; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Nova Seafood · aplikacja partnerska</p>
+    <h1>Uruchomienie aplikacji — krok po kroku</h1>
+    <p class="standfirst">Cztery etapy dzielą nas od aplikacji na prawdziwych danych. Każdy krok jest opisany klik po kliku — nie trzeba niczego wiedzieć o programowaniu. Przy każdym etapie napisane jest, kto go robi.</p>
+  </header>
+
+  <div class="panel safe">
+    <p class="panel-label">Co już jest zrobione (stan: 15.08.2026)</p>
+    <div class="done">
+      <div>Skrypt diagnostyczny wykonany na bazie <code>CDN_NOVA</code> i przeanalizowany.</div>
+      <div>Cały kod (aplikacja, konektor, panel) gotowy i dopasowany do Waszej wersji Optimy.</div>
+      <div><strong>ETAP A ZROBIONY</strong> — baza firmowa działa: tabele, funkcje, klucze, dane demo.</div>
+      <div><strong>Konta personelu założone</strong> (Mateusz, Darek, Łukasz) — hasła w <code>STAFF_LOGINS.local.txt</code>.</div>
+      <div>Panel personelu działa: <strong>materdyjo.github.io/nova-partner-app/panel/</strong></div>
+      <div>Audyt bezpieczeństwa wykonany, uwagi wdrożone (<a href="DLACZEGO-BEZPIECZNE.md">DLACZEGO-BEZPIECZNE.md</a>).</div>
+    </div>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <tr><th>Etap</th><th>Kto</th><th>Ile czasu</th><th>Co daje</th></tr>
+      <tr><td><strong>A. Chmura na koncie firmowym</strong> ✔ zrobione</td><td>Ty</td><td>~30 min</td><td>baza danych i logowanie PIN działają</td></tr>
+      <tr><td><strong>A2. Przełączniki w Supabase</strong> ← teraz</td><td>Ty</td><td>~10 min</td><td>domknięcie zabezpieczeń rejestracji</td></tr>
+      <tr><td><strong>B. Serwer Optimy</strong> ← teraz</td><td>informatyk</td><td>~45 min</td><td>prawdziwe dane płyną do aplikacji</td></tr>
+      <tr><td><strong>C. Panel — PIN-y i kategorie</strong></td><td>Ty / personel</td><td>~30 min</td><td>klienci mogą się logować</td></tr>
+      <tr><td><strong>D. Publikacja</strong></td><td>deweloper</td><td>~15 min</td><td>wersja demo znika, wchodzi prawdziwa</td></tr>
+    </table>
+  </div>
+
+  <div class="panel warn">
+    <p class="panel-label">Etap A2 — zostało do wyklikania w Supabase (app.supabase.com → projekt)</p>
+    <p>Przy każdym punkcie napisane, <strong>co konkretnie załatwia</strong> — żeby nie klikać w ciemno.</p>
+    <ul>
+      <li><span class="clickpath">Settings → API Keys</span> → <strong>Legacy API keys</strong> → <strong>Disable</strong>.<br>
+        <em>Po co:</em> stare klucze (w tym „service_role") omijają całą ochronę i dają pełny dostęp do bazy. Aplikacja używa już nowego klucza, więc te stare są zbędne — a dopóki działają, są otwartymi drzwiami.</li>
+      <li><span class="clickpath">Authentication → Sign In / Providers</span> → <strong>Email włączony</strong>.<br>
+        <em>Po co:</em> tym kanałem loguje się <strong>personel</strong> do panelu. Wyłączony = nikt z Was się nie zaloguje.</li>
+      <li><span class="clickpath">Authentication → Hooks</span> → <strong>Before User Created</strong> → <code>public.hook_restrict_signup</code>.<br>
+        <em>Po co:</em> to zamek na rejestrację. Bez niego ktoś obcy mógłby założyć sobie konto w Waszym systemie. Hook odrzuca każdy numer, którego nie ma na liście Waszych klientów.</li>
+      <li><span class="clickpath">Authentication → Attack Protection</span> → <strong>CAPTCHA wyłączona</strong>.<br>
+        <em>Po co:</em> CAPTCHA chroni formularze rejestracji, których tu nie ma — klient loguje się PIN-em przez naszą funkcję. Włączona blokowałaby logowanie, nie chroniąc niczego dodatkowo (przed zgadywaniem PIN-u broni blokada po 5 próbach).</li>
+      <li><span class="clickpath">Database → Extensions</span> → włącz <code>pg_cron</code>.<br>
+        <em>Po co:</em> nocne przeliczanie propozycji „Dla Ciebie" (co klient zwykle zamawia i kiedy powinien powtórzyć zamówienie). Bez tego szyny rekomendacji będą puste.</li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════ ETAP A ═══════════════════════ -->
+
+  <h2><span class="who">Etap A · robi: Ty · ok. 30 minut</span>Chmura na koncie firmowym</h2>
+  <p class="sub">Przenosimy zaplecze na firmowy projekt Supabase (<code>ztqhnqcxqlvcekekzkxg</code>). Potrzebujesz: komputer z folderem projektu (<code>D:\STRONA NOVA\nova-partner-app</code>) i dane logowania do <strong>firmowego</strong> konta Supabase.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>Otwórz PowerShell</h3>
+      <p>Wciśnij klawisz <kbd>Windows</kbd>, wpisz <strong>PowerShell</strong>, kliknij niebieską ikonę. Otworzy się okno z tekstem — dobrze trafiłeś, jeśli linia zaczyna się od <code>PS</code>.</p>
+    </li>
+    <li>
+      <h3>Wejdź do folderu projektu</h3>
+      <p>Wklej poniższą linię (prawy przycisk myszy w oknie = wklej) i wciśnij <kbd>Enter</kbd>. Cudzysłowy są ważne — w nazwie folderu jest spacja.</p>
+      <pre>cd "D:\STRONA NOVA\nova-partner-app"</pre>
+    </li>
+    <li>
+      <h3>Zaloguj narzędzie do konta FIRMOWEGO</h3>
+      <p>Wklej i zatwierdź:</p>
+      <pre>npx supabase login</pre>
+      <p>Otworzy się przeglądarka. Zaloguj się na <strong>konto firmowe</strong> (to, na którym założono nowy projekt) i kliknij zielony przycisk zgody. Wróć do czarnego okna — powinno napisać, że zalogowano.</p>
+      <p><strong>Uwaga:</strong> jeśli wcześniej logowano tu konto prywatne, to polecenie po prostu przełączy na firmowe — niczego nie psuje.</p>
+    </li>
+    <li>
+      <h3>Uruchom wdrożenie — jeden skrypt robi wszystko</h3>
+      <pre>.\supabase\deploy.ps1</pre>
+      <p>Skrypt przez kilka minut założy tabele, wgra 3 funkcje i klucze. Po drodze:</p>
+      <ul>
+        <li>Zapyta: <em>„Wgrać dane demo?"</em> → wpisz <strong>t</strong> i <kbd>Enter</kbd> (przydadzą się do testów, znikną same po podłączeniu Optimy).</li>
+        <li>Zapisze plik <code>CONNECTOR_SYNC_KEY.local.txt</code> w folderze projektu. To <strong>tajny klucz dla konektora</strong> — będzie potrzebny w Etapie B. Przenieś go do sejfu haseł (np. załóż wpis w menedżerze haseł), a plik potem usuń.</li>
+        <li>Na końcu (krok „5b") wypisze <strong>klucze projektu</strong>. Skopiuj ten zaczynający się od <code>sb_publishable_</code> i <strong>wyślij deweloperowi</strong> — ten klucz jest z założenia jawny, można go bezpiecznie wysłać mailem czy komunikatorem. Bez niego aplikacja nie połączy się z nową bazą.</li>
+      </ul>
+    </li>
+    <li>
+      <h3>Cztery przełączniki w panelu Supabase</h3>
+      <p>Wejdź na <strong>app.supabase.com</strong> (konto firmowe) i kliknij w projekt. Potem po kolei — wszystko w menu po lewej stronie:</p>
+      <ul>
+        <li><span class="clickpath">Authentication → Sign In / Providers</span> → upewnij się, że <strong>Email</strong> jest <strong>włączony</strong> (zielony). To wymóg logowania PIN-em.</li>
+        <li><span class="clickpath">Authentication → Attack Protection</span> → CAPTCHA ma być <strong>wyłączona</strong>. Włączona zablokowałaby logowanie PIN-em.</li>
+        <li><span class="clickpath">Authentication → Hooks</span> → kliknij <strong>Add hook</strong> → wybierz <strong>Before User Created</strong> → typ <strong>Postgres function</strong> → schemat <code>public</code>, funkcja <code>hook_restrict_signup</code> → <strong>Save / Create</strong>. (To zamek: rejestrować się mogą tylko numery Waszych klientów.)</li>
+        <li><span class="clickpath">Database → Extensions</span> → w wyszukiwarce wpisz <code>pg_cron</code> → włącz przełącznikiem. (Nocne przeliczanie propozycji „Dla Ciebie".)</li>
+      </ul>
+    </li>
+    <li>
+      <h3>Załóż konta dla personelu (do panelu) — jednym skryptem</h3>
+      <pre>.\supabase\create-staff.ps1</pre>
+      <p>Skrypt zakłada konta wszystkim osobom z listy na górze pliku i od razu dopisuje je do uprawnionego personelu (bez tego wpisu panel nie pokaże żadnych danych). Na koniec <strong>sprawdza, czy każde konto naprawdę się loguje</strong> i wypisuje <code>OK</code> przy każdym adresie.</p>
+      <ul>
+        <li><strong>Hasła</strong> trafiają do pliku <code>STAFF_LOGINS.local.txt</code> w folderze projektu — celowo nie pokazują się na ekranie. Rozdaj je bezpiecznym kanałem, każ zmienić po pierwszym logowaniu, a plik <strong>usuń</strong>.</li>
+        <li><strong>Nowy pracownik albo zapomniane hasło?</strong> Dopisz osobę do listy na górze <code>create-staff.ps1</code> (albo zostaw bez zmian) i uruchom skrypt ponownie — istniejącym kontom ustawi nowe hasła, nic nie zepsuje.</li>
+      </ul>
+      <p class="note">Ręczne zakładanie kont w <span class="clickpath">Authentication → Users</span> nie jest już potrzebne — skrypt robi obie czynności naraz (konto + uprawnienia).</p>
+    </li>
+    <li>
+      <h3>Szybka kontrola</h3>
+      <p>W tym samym <span class="clickpath">SQL Editor</span> uruchom:</p>
+      <pre>select count(*) from customers;</pre>
+      <p>Wynik <strong>2</strong> = dane demo weszły, wszystko gra. <strong>Etap A skończony.</strong></p>
+    </li>
+  </ol>
+
+  <div class="panel warn">
+    <p class="panel-label">Jak coś nie zagra w Etapie A</p>
+    <dl class="problems">
+      <dt>„npx nie jest rozpoznawane…"</dt>
+      <dd>Brakuje Node.js. Wejdź na <strong>nodejs.org</strong>, pobierz wersję LTS, zainstaluj (Dalej-Dalej-Zakończ), zamknij i otwórz PowerShell od nowa.</dd>
+      <dt>Skrypt otwiera się w Notatniku zamiast się uruchomić</dt>
+      <dd>Jesteś w zwykłym „Wierszu polecenia", nie w PowerShellu. Otwórz PowerShell (krok 1) — linia ma się zaczynać od <code>PS</code>.</dd>
+      <dt>„supabase link nieudany"</dt>
+      <dd>Logowanie z kroku 3 nie przeszło albo konto nie ma dostępu do projektu. Powtórz <code>npx supabase login</code> upewniając się, że logujesz się na konto, na którym widać projekt w app.supabase.com.</dd>
+      <dt>Cokolwiek innego</dt>
+      <dd>Zrób zdjęcie/zrzut całego okna z błędem i wyślij deweloperowi. Nic tu nie da się „zepsuć na stałe" — skrypt można uruchamiać wielokrotnie.</dd>
+    </dl>
+  </div>
+
+  <!-- ═══════════════════════ ETAP B ═══════════════════════ -->
+
+  <h2><span class="who">Etap B · robi: informatyk · ok. 45 minut</span>Serwer Optimy — konto, widoki, konektor</h2>
+  <p class="sub">Do wykonania przy serwerze <code>SRV-NOVA-P330</code> (albo z maszyny z dostępem do niego), jednorazowo z uprawnieniami administratora SQL. Potrzebny folder <code>connector\</code> z projektu (pendrive) oraz plik <code>CONNECTOR_SYNC_KEY.local.txt</code> z Etapu A.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>Test wstępny (5 sekund)</h3>
+      <p>W SSMS, na bazie <strong>CDN_NOVA</strong>, uruchom:</p>
+      <pre>SELECT TOP 1 KnA_WartoscTxt FROM CDN.KntAtrybuty WITH (NOLOCK);</pre>
+      <p>Wynik (nawet pusty) = OK. Błąd „Invalid column name" = daj znać deweloperowi (jednolinijkowa poprawka w skrypcie widoków) — wszystko inne z bazy zostało już potwierdzone wcześniejszą diagnostyką.</p>
+    </li>
+    <li>
+      <h3>Konto tylko-do-odczytu</h3>
+      <p>Otwórz <code>connector\sql\01_create_login.sql</code>, podmień <code>&lt;&lt;SILNE-HASLO-TUTAJ&gt;&gt;</code> (hasło do sejfu!) i nazwę bazy na <code>CDN_NOVA</code>, uruchom (<kbd>F5</kbd>). Tworzy login <code>nova_sync</code> z jednym uprawnieniem: <code>SELECT</code> na schemacie <code>nova</code>. Zero praw zapisu — celowo.</p>
+      <p class="why"><b>Dlaczego osobne konto, a nie istniejące?</b> Gdyby konektor logował się kontem administratora, każdy błąd lub przejęcie serwera groziłoby zmianą albo skasowaniem danych w Optimie. To konto <b>fizycznie nie potrafi</b> nic zapisać — może tylko czytać, i to wyłącznie 9 przygotowanych widoków. Celowo nie nadajemy roli <code>db_datareader</code>, bo dałaby wgląd w całą bazę, w tym kadry i finanse.</p>
+    </li>
+    <li>
+      <h3>Widoki</h3>
+      <p>Otwórz <code>connector\sql\02_create_views.sql</code>, podmień nazwę bazy na <code>CDN_NOVA</code>, uruchom. Tworzy 9 widoków <code>nova.v*</code> (same SELECT-y z NOLOCK). Test:</p>
+      <p class="why"><b>Dlaczego widoki, a nie zapytania wprost do tabel?</b> Trzy powody. <b>Bezpieczeństwo:</b> konektor widzi wyłącznie te kolumny, które sami wystawiliśmy — reszta bazy jest dla niego niewidoczna. <b>Odporność:</b> gdy Comarch zmieni coś w strukturze przy aktualizacji Optimy, poprawiamy jeden plik SQL zamiast przebudowywać program. <b>Wydajność:</b> <code>NOLOCK</code> sprawia, że odczyt nie zakłada blokad, więc synchronizacja nie spowalnia pracy handlowców w Optimie.</p>
+      <pre>EXECUTE AS LOGIN = 'nova_sync';
+SELECT TOP 5 * FROM nova.vCustomers;
+REVERT;</pre>
+    </li>
+    <li>
+      <h3>Konektor — publikacja i konfiguracja</h3>
+      <p>Na maszynie, która ma zostać z usługą (może być sam serwer): zainstaluj <strong>.NET 7 Runtime</strong> (jeśli brak), potem w folderze <code>connector\</code>:</p>
+      <pre>dotnet publish src\NovaOptimaConnector\NovaOptimaConnector.csproj -c Release -r win-x64 --self-contained -o C:\NovaConnector</pre>
+      <p>W <code>C:\NovaConnector\appsettings.json</code> uzupełnij trzy rzeczy:</p>
+      <ul>
+        <li><code>ConnectionStrings:Optima</code> → <code>Server=SRV-NOVA-P330;Database=CDN_NOVA;User Id=nova_sync;Password=HASLO-Z-KROKU-2;TrustServerCertificate=True</code></li>
+        <li><code>Sync:Endpoint</code> → <code>https://ztqhnqcxqlvcekekzkxg.supabase.co/functions/v1/sync-ingest</code></li>
+        <li><code>Sync:ConnectorKey</code> → zawartość pliku <code>CONNECTOR_SYNC_KEY.local.txt</code> z Etapu A</li>
+      </ul>
+    </li>
+    <li>
+      <h3>Instalacja usługi</h3>
+      <pre>sc.exe create NovaOptimaConnector binPath= "C:\NovaConnector\NovaOptimaConnector.exe" start= auto
+sc.exe description NovaOptimaConnector "Synchronizacja Optima -> Supabase (Nova Seafood Partner)"
+sc.exe start NovaOptimaConnector</pre>
+      <p>(Spacje po <code>binPath=</code> i <code>start=</code> są wymagane. Jeśli konto usługi nie widzi serwera SQL po sieci — użyj konta domenowego przez <code>obj=</code>.)</p>
+      <p class="why"><b>Dlaczego usługa Windows, a nie zaplanowane zadanie?</b> Usługa startuje sama po restarcie serwera i nie wymaga, by ktokolwiek był zalogowany. Konektor sam pilnuje harmonogramu synchronizacji, więc nie potrzebuje SQL Agenta — a to istotne, bo Wasza edycja <b>SQL Server Express go nie ma</b>.</p>
+    </li>
+    <li>
+      <h3>Kontrola — czy dane płyną</h3>
+      <p>Log: <code>C:\NovaConnector\logs\connector-*.log</code> — po pierwszym przebiegu ma być „Przebieg zakończony … 0 tabel z błędem". Po stronie chmury (SQL Editor w Supabase):</p>
+      <pre>select id, started_at, ok, rows_upserted, error
+from sync_runs order by id desc limit 5;</pre>
+      <p><code>ok = true</code> i tysiące wierszy = <strong>Optima jest podłączona</strong>. Wymagania sieciowe: wyłącznie połączenia WYCHODZĄCE na port 443 do <code>*.supabase.co</code> — żadnych portów przychodzących, żadnego VPN.</p>
+    </li>
+  </ol>
+
+  <!-- ═══════════════════════ ETAP C ═══════════════════════ -->
+
+  <h2><span class="who">Etap C · robi: Ty / personel · ok. 30 minut</span>Panel — kategorie i PIN-y klientów</h2>
+  <p class="sub">Panel personelu działa w przeglądarce: <strong>materdyjo.github.io/nova-partner-app/panel/</strong>. Logowanie: e-mail i hasło z pliku <code>STAFF_LOGINS.local.txt</code> (krok A5).</p>
+
+  <ol class="steps">
+    <li>
+      <h3>Włącz sobie powiadomienia (każdy osobno, na swoim telefonie)</h3>
+      <p>Po zalogowaniu, na dole lewej kolumny obok „Wyloguj", kliknij <strong>„Włącz powiadomienia"</strong> i zezwól w przeglądarce. Od razu przyjdzie <strong>próbne powiadomienie</strong> — dzięki temu od razu wiesz, że działa.</p>
+      <p>Od tej chwili, gdy klient kliknie w aplikacji <strong>„Zapytaj o produkt"</strong>, dostajesz sygnał na telefon <strong>nawet przy zamkniętym panelu</strong>. Kliknięcie w powiadomienie otwiera panel na zakładce „Zapytania".</p>
+      <p class="note"><strong>Na iPhonie</strong> Apple wymaga dodatkowego kroku: Safari → otwórz panel → przycisk „Udostępnij" → <strong>„Do ekranu głównego"</strong> → otwórz panel <em>z tej ikony</em> → dopiero wtedy włącz powiadomienia. Na Androidzie i komputerze działa od razu.</p>
+    </li>
+    <li>
+      <h3>Zdecyduj, co widzą klienci</h3>
+      <p>Zakładka <strong>Katalog</strong>: zaznacz „Podstawowy" przy produktach, które ma widzieć <em>każdy</em> klient. Zakładka <strong>Klienci</strong>: przy każdym kliencie zaznacz kategorie (Ryby morskie / słodkowodne / NovaTiger / Pozostałe), które ma widzieć. Bez zaznaczenia klient widzi tylko produkty podstawowe.</p>
+      <p class="why"><b>Dlaczego domyślnie klient widzi mało?</b> Bo wśród Waszych klientów są konkurenci wobec siebie. Zasada jest odwrotna niż w sklepie internetowym: <b>domyślnie nie widać nic</b>, a Wy świadomie odsłaniacie, co komu pokazać. Pilnuje tego sama baza danych, nie aplikacja — więc nawet ktoś, kto ominie aplikację i spyta bazę wprost, dostanie tylko swoją ofertę i swoje ceny.</p>
+    </li>
+    <li>
+      <h3>Wygeneruj PIN-y pilotażowym klientom</h3>
+      <p>Zakładka <strong>Klienci</strong> → przy kliencie z telefonem kliknij <strong>Generuj PIN</strong>. PIN pokaże się <strong>jeden raz</strong> — przekaż go klientowi (telefonicznie/osobiście). Zgubiony PIN = <strong>Resetuj PIN</strong> (stary przestaje działać). Klient zmienił telefon = <strong>Odblokuj urządzenia</strong>.</p>
+      <p class="why"><b>Dlaczego PIN pokazuje się tylko raz?</b> Bo nigdzie go nie przechowujemy — w bazie leży wyłącznie jego nieodwracalny skrót. Nawet ktoś z dostępem do bazy nie odczyta PIN-u klienta. Dlatego „zgubiony PIN" rozwiązuje się nowym PIN-em, a nie podejrzeniem starego.<br>
+      <b>Dlaczego „Odblokuj urządzenia"?</b> Konto klienta jest przypisane do <b>jednego</b> urządzenia — nawet ktoś, kto pozna numer i PIN, nie zaloguje się ze swojego telefonu. Gdy klient zmienia telefon (albo przeinstaluje aplikację), musicie zdjąć tę blokadę tym przyciskiem.</p>
+      <p>Na start wygeneruj PIN <strong>sobie</strong> (jeśli Twój numer jest w Optimie) — przetestujesz logowanie jak klient.</p>
+    </li>
+    <li>
+      <h3>Pamiętaj o telefonach w Optimie</h3>
+      <p>Telefon klienta w Optimie to jego login. Z diagnostyki: numer ma tylko <strong>727 z 2025</strong> aktywnych klientów, a ok. 22 numery są wpisane u kilku firm naraz (tacy klienci nie zalogują się, dopóki numery nie zostaną rozdzielone — lista dubli jest w logu konektora). Uzupełniajcie od klientów, którzy kupowali ostatnio.</p>
+    </li>
+  </ol>
+
+  <!-- ═══════════════════════ ETAP D ═══════════════════════ -->
+
+  <h2><span class="who">Etap D · robi: deweloper · ok. 15 minut</span>Publikacja wersji prawdziwej</h2>
+  <p>Gdy Etapy A–B są zrobione: wyślij deweloperowi klucz <code>sb_publishable_…</code> (z kroku A4, jeśli jeszcze nie poszedł). Deweloper wklei go do aplikacji i panelu, przełączy aplikację na prawdziwe dane i opublikuje — pod tym samym adresem wersja pokazowa zniknie, pojawi się logowanie PIN-em na danych z Optimy. Od tej chwili adres można dawać klientom (telefon: otworzyć stronę → „Dodaj do ekranu głównego" — działa jak aplikacja).</p>
+
+  <div class="panel act">
+    <p class="panel-label">Co jest tajne, a co jawne — ściąga</p>
+    <div class="tblwrap">
+      <table>
+        <tr><th>Rzecz</th><th>Status</th><th>Gdzie trzymać</th></tr>
+        <tr><td>Hasło konta firmowego Supabase</td><td><strong>tajne</strong></td><td>sejf haseł</td></tr>
+        <tr><td>Hasło loginu <code>nova_sync</code> (baza Optimy)</td><td><strong>tajne</strong></td><td>sejf haseł + appsettings na serwerze</td></tr>
+        <tr><td><code>CONNECTOR_SYNC_KEY</code> (plik z Etapu A)</td><td><strong>tajny</strong></td><td>sejf haseł + appsettings na serwerze; plik z folderu usunąć</td></tr>
+        <tr><td>Hasło personelu do panelu</td><td><strong>tajne</strong></td><td>sejf haseł</td></tr>
+        <tr><td>PIN-y klientów</td><td><strong>tajne</strong></td><td>tylko u klienta; nigdzie nie są zapisane</td></tr>
+        <tr><td>Klucz <code>sb_publishable_…</code></td><td>jawny</td><td>można wysłać mailem — jest wbudowany w aplikację</td></tr>
+        <tr><td>Adres projektu / aplikacji</td><td>jawny</td><td>—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>Po wszystkim — porządki</h2>
+  <ul>
+    <li><strong>Stary projekt Supabase</strong> (prywatne konto, <code>kdelog…</code>): nic ważnego tam nie ma (dane demo). Można go usunąć: stare konto → projekt → <span class="clickpath">Settings → General → Delete project</span> — albo po prostu zostawić uśpiony.</li>
+    <li><strong>Plik diagnostyczny</strong> <code>results.rpt</code> (Pobrane): zawiera prawdziwe numery telefonów i ceny — po wdrożeniu usunąć.</li>
+    <li><strong>Darmowy plan Supabase</strong> usypia projekt po ~tygodniu bezczynności — po uruchomieniu konektora (Etap B) ruch jest ciągły i to znika. Przy pełnym wydaniu warto rozważyć plan płatny (limity, kopie zapasowe).</li>
+  </ul>
+
+  <hr>
+  <p class="foot">Wątpliwość przy którymkolwiek kroku? Zrzut ekranu i wiadomość do dewelopera — lepiej zapytać niż zgadywać. Szczegóły techniczne: <code>docs/DEPLOYMENT.md</code> w projekcie; notatka architektoniczna dla IT: <strong>materdyjo.github.io/nova-partner-app/informatyk.html</strong>.</p>
+
+</div>
+
+</body>
+</html>

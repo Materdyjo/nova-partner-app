@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- CSP: skrypty i style tylko z własnego hosta, sieć tylko do Supabase.
+       Żadnych CDN-ów — supabase-js jest przypięty lokalnie w vendor/.
+       frame-ancestors działa wyłącznie z nagłówka HTTP — ustaw też na hostingu,
+       jeśli pozwala na własne nagłówki. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://ztqhnqcxqlvcekekzkxg.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'">
+  <meta name="robots" content="noindex">
+  <title>Nova Seafood — Panel personelu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232a487d'/%3E%3Ctext x='32' y='43' font-family='Arial,sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3Ens%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ekran logowania personelu (e-mail + hasło) -->
+  <div id="login-screen" class="login hidden">
+    <form id="login-form" class="login-card">
+      <div class="logo">ns</div>
+      <h1>Panel personelu</h1>
+      <p class="muted">Nova Seafood — zaplecze aplikacji partnerskiej</p>
+      <label class="field">E-mail
+        <input type="email" id="login-email" autocomplete="username" required>
+      </label>
+      <label class="field">Hasło
+        <input type="password" id="login-password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn btn-primary" id="login-submit">Zaloguj się</button>
+    </form>
+  </div>
+
+  <!-- Właściwa aplikacja (widoczna po zalogowaniu i weryfikacji staff_users) -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">ns</div>
+        <div class="brand-text"><strong>Nova Seafood</strong><span>Panel personelu</span></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item" data-view="promocje">Promocje</button>
+        <button class="nav-item" data-view="powiadomienia">Powiadomienia</button>
+        <button class="nav-item" data-view="zapytania">Zapytania <span id="nav-inquiries-badge" class="nav-badge hidden"></span></button>
+        <button class="nav-item" data-view="rezerwacje">Rezerwacje</button>
+        <button class="nav-item" data-view="klienci">Klienci</button>
+        <button class="nav-item" data-view="katalog">Katalog</button>
+        <button class="nav-item" data-view="sync">Synchronizacja</button>
+      </nav>
+      <div class="sidebar-foot">
+        <span id="user-label" class="muted small"></span>
+        <!-- Powiadomienia push o nowych zapytaniach klientow (Web Push/VAPID).
+             Ukryty, gdy przegladarka nie wspiera push (np. iOS bez PWA). -->
+        <button id="push-btn" class="btn btn-ghost hidden" type="button">Powiadomienia</button>
+        <button id="logout-btn" class="btn btn-ghost">Wyloguj</button>
+      </div>
+    </aside>
+    <main id="view"></main>
+  </div>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root"></div>
+
+  <!-- Przypięty supabase-js 2.49.4 (UMD, global `supabase`) — self-host, bez CDN. -->
+  <script src="vendor/supabase.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
