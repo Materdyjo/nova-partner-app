@@ -1,0 +1,8 @@
+{
+  "android": {
+    "version": "1.0.1",
+    "build": 2,
+    "url": "https://github.com/Materdyjo/nova-partner-app/releases/latest/download/nova-partner-latest.apk",
+    "notes": "Rezerwacje: lista do realizacji i ostatnie zrealizowane pod przyciskiem. Aktualizacje instalowane z poziomu aplikacji."
+  }
+}
