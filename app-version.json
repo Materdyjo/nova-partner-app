@@ -1,0 +1,8 @@
+{
+  "android": {
+    "version": "1.0.3",
+    "build": 4,
+    "url": "https://github.com/Materdyjo/nova-partner-app/releases/latest/download/nova-partner-latest.apk",
+    "notes": "Powiadomienia na telefon o nowych promocjach i rezerwacjach. Oferta w PDF prosto z cennika. Promocje pokazują kwotę zamiast procentu."
+  }
+}

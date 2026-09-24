@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Nova Partner — integracja z Optimą: notatka dla IT</title>
+
+<style>
+  :root {
+    --ground: #f4f8fc; --surface: #ffffff; --surface-2: #eef4fa; --line: #d7e3ef;
+    --ink: #16233a; --ink-soft: #5a6b85; --navy: #2a487d; --blue: #3c79e1;
+    --safe-bg: #e7f4ef; --safe-line: #b3ddcb; --safe-ink: #14614a;
+    --warn-bg: #fdf3e2; --warn-line: #f0d6a6; --warn-ink: #8a5a08;
+    --act-bg: #eaf1fe; --act-line: #b9d1f7; --act-ink: #234c93;
+    --code-bg: #10192a; --code-ink: #d5e2f2; --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0c1320; --surface: #141e2d; --surface-2: #1a2637; --line: #2a3a52;
+      --ink: #e9eff7; --ink-soft: #9aabc4; --navy: #8fb3ec; --blue: #6c9bf0;
+      --safe-bg: #122c26; --safe-line: #24564a; --safe-ink: #7fd6b8;
+      --warn-bg: #2e2413; --warn-line: #5c4720; --warn-ink: #e5b866;
+      --act-bg: #16233c; --act-line: #2c4675; --act-ink: #9cc0f5;
+      --code-bg: #080e18; --code-ink: #cddcf0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0c1320; --surface: #141e2d; --surface-2: #1a2637; --line: #2a3a52;
+    --ink: #e9eff7; --ink-soft: #9aabc4; --navy: #8fb3ec; --blue: #6c9bf0;
+    --safe-bg: #122c26; --safe-line: #24564a; --safe-ink: #7fd6b8;
+    --warn-bg: #2e2413; --warn-line: #5c4720; --warn-ink: #e5b866;
+    --act-bg: #16233c; --act-line: #2c4675; --act-ink: #9cc0f5;
+    --code-bg: #080e18; --code-ink: #cddcf0;
+  }
+  :root[data-theme="light"] {
+    --ground: #f4f8fc; --surface: #ffffff; --surface-2: #eef4fa; --line: #d7e3ef;
+    --ink: #16233a; --ink-soft: #5a6b85; --navy: #2a487d; --blue: #3c79e1;
+    --safe-bg: #e7f4ef; --safe-line: #b3ddcb; --safe-ink: #14614a;
+    --warn-bg: #fdf3e2; --warn-line: #f0d6a6; --warn-ink: #8a5a08;
+    --act-bg: #eaf1fe; --act-line: #b9d1f7; --act-ink: #234c93;
+    --code-bg: #10192a; --code-ink: #d5e2f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 16.5px; line-height: 1.62; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 28px 18px 80px; }
+  .masthead { padding: 6px 0 22px; border-bottom: 2px solid var(--navy); margin-bottom: 8px; }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--blue); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(26px, 6vw, 38px); line-height: 1.12; margin: 0 0 12px;
+    font-weight: 800; letter-spacing: -0.02em; color: var(--navy); text-wrap: balance;
+  }
+  .standfirst { font-size: 17.5px; color: var(--ink-soft); margin: 0; }
+  .meta { font-size: 13px; color: var(--ink-soft); margin: 14px 0 0; }
+  h2 {
+    font-size: clamp(20px, 4.6vw, 25px); font-weight: 800; letter-spacing: -0.015em;
+    color: var(--navy); margin: 44px 0 6px; text-wrap: balance;
+    padding-top: 8px; border-top: 1px solid var(--line);
+  }
+  h2 .num {
+    font-variant-numeric: tabular-nums; color: var(--blue);
+    font-size: 0.7em; margin-right: 8px; font-weight: 700;
+  }
+  h2 + .sub { color: var(--ink-soft); margin: 0 0 16px; font-size: 15px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 22px 0 8px; color: var(--ink); }
+  p { margin: 0 0 14px; }
+  strong { font-weight: 700; }
+  a { color: var(--blue); }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 7px; }
+
+  .panel {
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: var(--radius); padding: 18px 18px 6px; margin: 18px 0;
+  }
+  .panel > :last-child { margin-bottom: 12px; }
+  .panel.safe { background: var(--safe-bg); border-color: var(--safe-line); }
+  .panel.safe .panel-label { color: var(--safe-ink); }
+  .panel.warn { background: var(--warn-bg); border-color: var(--warn-line); }
+  .panel.warn .panel-label { color: var(--warn-ink); }
+  .panel.act { background: var(--act-bg); border-color: var(--act-line); border-width: 2px; }
+  .panel.act .panel-label { color: var(--act-ink); }
+  .panel-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; margin: 0 0 8px; color: var(--blue);
+  }
+
+  .tldr { display: grid; gap: 10px; }
+  .tldr div { padding-left: 26px; position: relative; }
+  .tldr div::before {
+    content: ""; position: absolute; left: 0; top: 7px; width: 13px; height: 13px;
+    border-radius: 50%; background: var(--safe-ink);
+  }
+
+  .tblwrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius); border: 1px solid var(--line); }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 700; color: var(--navy); font-size: 12.5px;
+       letter-spacing: 0.04em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: none; }
+  td code { white-space: nowrap; }
+
+  code {
+    font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 0.88em;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px;
+  }
+  pre {
+    margin: 14px 0; background: var(--code-bg); color: var(--code-ink);
+    font-family: ui-monospace, Consolas, monospace; font-size: 13px; line-height: 1.55;
+    border-radius: var(--radius); padding: 15px 16px; overflow-x: auto;
+  }
+  .diagram { font-size: 12.5px; line-height: 1.5; white-space: pre; }
+
+  .ask { counter-reset: opt; display: grid; gap: 14px; margin: 16px 0; }
+  .opt { border: 1px solid var(--act-line); border-radius: var(--radius); padding: 16px 18px; background: var(--surface); }
+  .opt h3 { margin: 0 0 6px; color: var(--navy); }
+  .opt .tag {
+    display: inline-block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--act-ink); background: var(--act-bg);
+    border: 1px solid var(--act-line); border-radius: 999px; padding: 2px 10px; margin-bottom: 8px;
+  }
+  .opt p { margin: 0; }
+
+  dl.faq { margin: 0; }
+  dl.faq dt { font-weight: 700; color: var(--navy); margin: 18px 0 5px; }
+  dl.faq dd { margin: 0; color: var(--ink); }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 40px 0 0; }
+  .foot { color: var(--ink-soft); font-size: 14px; margin-top: 18px; }
+  .kv { font-size: 14.5px; margin: 0 0 6px; }
+  .kv b { color: var(--navy); }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Nova Seafood · aplikacja partnerska B2B</p>
+    <h1>Integracja z Comarch Optima — notatka dla działu IT</h1>
+    <p class="standfirst">Co budujemy, jak to działa, dlaczego jest bezpieczne dla Waszej bazy i czego konkretnie potrzebujemy od IT, żeby ruszyć.</p>
+    <p class="meta">Przygotowane dla informatyka i kierownictwa Nova Seafood. Dokument techniczny, ale pisany tak, by był zrozumiały też dla osoby nietechnicznej.</p>
+  </header>
+
+  <div class="panel safe">
+    <p class="panel-label">W trzech zdaniach</p>
+    <div class="tldr">
+      <div>Robimy aplikację mobilną/web dla stałych klientów, która pokazuje im ich <strong>ceny, rezerwacje i historię zakupów</strong> — dane pochodzą z Optimy.</div>
+      <div>Aplikacja <strong>tylko czyta</strong> bazę Optimy (nigdy nie zapisuje), połączenie idzie <strong>wyłącznie na zewnątrz</strong> firmy — żadnych portów przychodzących, żadnego VPN-a do bazy.</div>
+      <div>Żeby ruszyć, potrzebujemy jednej rzeczy: <strong>uruchomienia skryptu diagnostycznego na bazie <code>CDN_NOVA</code></strong> albo <strong>loginu SQL tylko do odczytu</strong>. Szczegóły w sekcji 4.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">01</span>Co budujemy</h2>
+  <p>Aplikacja B2B „Nova Seafood Partner" dla stałych klientów (dystrybutorzy, przetwórcy, gastronomia). Klient loguje się numerem telefonu + PIN-em i widzi:</p>
+  <ul>
+    <li><strong>Swój indywidualny cennik</strong> — ceny z jego poziomu cenowego i rabatów z Optimy.</li>
+    <li><strong>Swoje rezerwacje</strong> (dokumenty RO) — statusy i planowane daty dostawy.</li>
+    <li><strong>Historię zakupów</strong> i spersonalizowane propozycje produktów.</li>
+    <li><strong>Promocje</strong> dodawane ręcznie przez handlowców.</li>
+  </ul>
+  <p>Dystrybucja poza sklepami (link/PWA na telefon, opcjonalnie APK). Handlowcy zarządzają promocjami, statusami rezerwacji i dostępem klientów przez osobny panel webowy.</p>
+
+  <h2><span class="num">02</span>Jak to działa — architektura</h2>
+  <p class="sub">Jednokierunkowy przepływ danych: z Optimy na zewnątrz. Nie ma drogi powrotnej z internetu do Waszej sieci.</p>
+
+  <div class="panel">
+    <div class="diagram">┌─ Sieć firmowa Nova Seafood ─────────────┐        ┌─ Chmura (Supabase, region UE) ─┐
+│                                         │        │                                │
+│  Comarch Optima ── SQL Server (CDN_NOVA)│        │   Baza danych + reguły dostępu │
+│         │  odczyt widoków nova.*        │ HTTPS  │   (każdy klient widzi tylko    │
+│         ▼  (login tylko-do-odczytu)     │  443   │    swoje dane)                 │
+│   Konektor (usługa Windows)  ───────────┼───────▶│   ◀── aplikacja klienta        │
+│   tylko połączenia WYCHODZĄCE, co ~5 min│  tylko │   ◀── panel handlowców         │
+│                                         │ wyjście│                                │
+└─────────────────────────────────────────┘        └────────────────────────────────┘</div>
+  </div>
+
+  <ul>
+    <li><strong>Konektor</strong> — mała usługa Windows na maszynie w Waszej sieci. Co ~5 minut czyta zmiany z bazy i wysyła je szyfrowanym HTTPS do chmury. <strong>Sam inicjuje połączenie na zewnątrz</strong> — nikt z zewnątrz nie łączy się do Was.</li>
+    <li><strong>Chmura (Supabase)</strong> — trzyma kopię danych potrzebnych aplikacji, z regułami bezpieczeństwa (każdy klient widzi wyłącznie swoje rekordy). Region UE.</li>
+    <li><strong>Aplikacja i panel</strong> — rozmawiają wyłącznie z chmurą. <strong>Nie znają adresu Waszej bazy ani żadnego hasła do niej.</strong></li>
+  </ul>
+  <p>To ten sam wzorzec, którego Comarch używa we własnej integracji e-Sklep: usługa w sieci firmy wypycha dane na zewnątrz. Standard branżowy (tak działają też konektory SAP, Microsoftu itd.).</p>
+
+  <h2><span class="num">03</span>Wasze środowisko (ze zrzutów z Optimy)</h2>
+  <div class="tblwrap">
+    <table>
+      <tr><th>Element</th><th>Wartość</th></tr>
+      <tr><td>Wersja Optimy</td><td>Comarch ERP Optima <code>2026.3.1.5710</code> (baza 2026.0300)</td></tr>
+      <tr><td>Serwer SQL</td><td><code>SRV-NOVA-P330</code> · Microsoft SQL Server 2022 <strong>Express</strong></td></tr>
+      <tr><td>Baza firmowa</td><td><code>CDN_NOVA</code> (~3,2 GB) · baza konfiguracyjna <code>CDN_Konfig_2024</code></td></tr>
+      <tr><td>Moduły</td><td>Handel Plus, Kasa/Bank, CRM</td></tr>
+    </table>
+  </div>
+  <p><strong>Ocena kompatybilności: dobra, do potwierdzenia jednym skryptem.</strong> Integracja opiera się na tabelach o stabilnym od lat schemacie (<code>CDN.Towary</code>, <code>CDN.Kontrahenci</code>, <code>CDN.TraNag</code>, <code>TwrCeny</code>, <code>TwrZasoby</code>, <code>Rabaty</code>). Zapytania budowaliśmy na dokumentacji Optimy 2023.3, a u Was jest 2026 — Comarch potrafi między wersjami dokładać/zmieniać kolumny, dlatego <strong>przed uruchomieniem trzeba potwierdzić kilka szczegółów skryptem diagnostycznym</strong>. Moduł <strong>Handel Plus jest obecny</strong> — to ważne, bo bez niego nie byłoby dostępu do stanów magazynowych.</p>
+
+  <div class="panel act">
+    <p class="panel-label">★ Czego potrzebujemy od IT — najbliższy krok</p>
+    <p>Aplikacja developera i konto Windows użytkownika (<code>IMPORT\tom</code>) <strong>nie mają dostępu do serwera SQL</strong> — komputer jest w domenie, której serwer nie ufa, a SSMS nie jest zainstalowany. Optima łączy się z bazą własnym, ukrytym kontem SQL, którego pracownik nie zna. Dlatego potrzebujemy pomocy IT — jedną z dwóch dróg:</p>
+    <div class="ask">
+      <div class="opt">
+        <span class="tag">Opcja A — najprościej</span>
+        <h3>IT uruchamia skrypt i odsyła wynik</h3>
+        <p>Informatyk otwiera w SSMS na bazie <code>CDN_NOVA</code> plik <code>00_probe.sql</code>, przełącza wyniki na tekst (Ctrl+T), uruchamia (F5) i odsyła wynik. Skrypt jest <strong>w 100% tylko do odczytu</strong> (same <code>SELECT</code> z <code>NOLOCK</code>), nie zmienia niczego i nie blokuje pracy w Optimie.</p>
+      </div>
+      <div class="opt">
+        <span class="tag">Opcja B</span>
+        <h3>IT zakłada login SQL tylko do odczytu</h3>
+        <p>Login SQL (użytkownik + hasło) z <code>GRANT SELECT</code> na <code>CDN_NOVA</code>. Wtedy skrypt można uruchomić samodzielnie i to samo konto (z zawężonymi uprawnieniami) posłuży później konektorowi.</p>
+      </div>
+    </div>
+    <p style="margin-top:4px">Skrypt <code>00_probe.sql</code> jest w repozytorium projektu (<code>connector/sql/00_probe.sql</code>) oraz wklejony w instrukcji: <strong>materdyjo.github.io/nova-partner-app/instrukcja.html</strong></p>
+  </div>
+
+  <h2><span class="num">04</span>Bezpieczeństwo — dlaczego to nie zagraża bazie</h2>
+  <div class="panel safe">
+    <p class="panel-label">Gwarancje</p>
+    <ul>
+      <li><strong>Tylko odczyt.</strong> Konektor wykonuje wyłącznie <code>SELECT</code>. W kodzie nie ma ani jednej operacji zapisu (zweryfikowane statycznie: zero <code>INSERT/UPDATE/DELETE</code>).</li>
+      <li><strong>Podwójne zabezpieczenie.</strong> Konto konektora dostaje jedno jedyne uprawnienie — <code>GRANT SELECT</code> na osobnym schemacie <code>nova</code>. Nawet gdyby w kodzie był błąd, SQL Server sam odrzuci każdą próbę zapisu.</li>
+      <li><strong>Minimum uprawnień.</strong> Celowo <em>nie</em> nadajemy <code>db_datareader</code> (dałby wgląd w całą bazę: kadry, płace, finanse). Konto widzi wyłącznie 9 widoków z danymi potrzebnymi aplikacji.</li>
+      <li><strong>Bez blokad.</strong> Odczyty z <code>WITH (NOLOCK)</code> — nie kolidują z pracą użytkowników Optimy.</li>
+      <li><strong>Odwracalne.</strong> Instalacja tworzy tylko nowe obiekty <em>obok</em> danych Optimy (schemat <code>nova</code>, widoki, konto). Trzy polecenia <code>DROP</code> usuwają wszelki ślad; baza wraca do stanu sprzed.</li>
+      <li><strong>Brak drogi do środka.</strong> Zero portów przychodzących, zero VPN-a do bazy. Z internetu nie ma jak dosięgnąć Waszej bazy.</li>
+      <li><strong>Dane w UE.</strong> Chmura w regionie UE; synchronizujemy tylko to, co aplikacja pokazuje (nie cały eksport bazy).</li>
+    </ul>
+  </div>
+  <p>Zapis do Optimy (np. wystawianie dokumentów) robi się przez oficjalne API Comarchu i wymaga licencji — <strong>my tego nie robimy</strong>, więc ten temat nas nie dotyczy. Bezpośredni odczyt bazy <code>CDN_*</code> to standardowa praktyka wszystkich polskich integratorów Optimy.</p>
+
+  <h2><span class="num">05</span>Pełny plan wdrożenia</h2>
+  <div class="tblwrap">
+    <table>
+      <tr><th>Etap</th><th>Co</th><th>Kto</th></tr>
+      <tr><td><strong>1. Diagnostyka</strong> ← jesteśmy tu</td><td>Uruchomić <code>00_probe.sql</code> na <code>CDN_NOVA</code>, odesłać wynik (albo dać login SQL do odczytu)</td><td>IT</td></tr>
+      <tr><td>2. Dopasowanie</td><td>Poprawić widoki <code>nova.*</code> pod wersję 2026 na podstawie wyniku</td><td>developer</td></tr>
+      <tr><td>3. Konto + widoki</td><td>Uruchomić skrypty <code>01_create_login.sql</code> (konto tylko-do-odczytu) i <code>02_create_views.sql</code> na serwerze</td><td>IT (jednorazowo, jako administrator)</td></tr>
+      <tr><td>4. Konektor</td><td>Zainstalować usługę Windows na maszynie w sieci (odczyt bazy → wysyłka do chmury)</td><td>IT + developer</td></tr>
+      <tr><td>5. Włączenie danych</td><td>Przełączyć aplikację z danych demo na prawdziwe, opublikować</td><td>developer</td></tr>
+      <tr><td>6. Weryfikacja telefonów</td><td>Uzupełnić w Optimie numery telefonów klientów (to login do aplikacji), którym ich brakuje</td><td>handlowcy</td></tr>
+    </table>
+  </div>
+  <p class="kv"><b>Backend w chmurze jest już wdrożony</b> — czeka na dane. Kod aplikacji, konektora i skryptów SQL jest gotowy i przetestowany. Brakuje wyłącznie połączenia z żywą bazą (etapy 1, 3, 4).</p>
+
+  <h2><span class="num">06</span>Co będzie potrzebne od IT na kolejnych etapach</h2>
+  <ul>
+    <li><strong>Login SQL tylko do odczytu</strong> na <code>CDN_NOVA</code> dla konektora (konto <code>nova_sync</code>, tworzy je skrypt <code>01</code> — potrzebne uprawnienia administratora bazy jednorazowo przy instalacji).</li>
+    <li><strong>Maszyna Windows w sieci firmy</strong> z dostępem do serwera <code>SRV-NOVA-P330</code> — może to być sam serwer Optimy albo dowolny komputer w tej samej sieci. Wymaga <strong>.NET 7 Runtime</strong> i możliwości wychodzącego <strong>HTTPS (port 443)</strong> do <code>*.supabase.co</code>.</li>
+    <li><strong>Żadnych portów przychodzących</strong> nie otwieramy — to celowe.</li>
+    <li>Jedno zdanie uprzedzenia dla ewentualnego systemu EDR/monitoringu, że nowa usługa będzie się łączyć wychodząco z bazą i z <code>*.supabase.co</code> — to normalny ruch, nie incydent.</li>
+  </ul>
+
+  <h2><span class="num">07</span>Najczęstsze pytania</h2>
+  <dl class="faq">
+    <dt>Optima nie ma API — jak to w ogóle działa?</dt>
+    <dd>Zgadza się, stacjonarna Optima nie ma oficjalnego API REST. My go nie używamy — czytamy bazę SQL bezpośrednio (tylko odczyt), tak jak robią wszyscy integratorzy Optimy. API Comarchu służy głównie do <em>zapisu</em> i wymaga licencji; nas nie dotyczy, bo nic nie zapisujemy.</dd>
+
+    <dt>A gwarancja Comarchu?</dt>
+    <dd>Comarch wyłącza z gwarancji <em>modyfikowanie</em> bazy z zewnątrz — i słusznie. My niczego nie modyfikujemy, wyłącznie czytamy. Odczyt bazy <code>CDN_*</code> nie narusza gwarancji.</dd>
+
+    <dt>Nie spowolni nam to Optimy?</dt>
+    <dd>Odczyty idą z <code>NOLOCK</code> (nie zakładają blokad) i pytają tylko o zmiany od ostatniego razu, co ~5 minut. Baza ma ~3,2 GB — obciążenie jest znikome. Uwaga na SQL Express: limit 10 GB na bazę (jesteście daleko) i mniej zasobów niż w wersji płatnej — dlatego sync jest przyrostowy, a nie pełny za każdym razem.</dd>
+
+    <dt>Czy Optima może „zbanować" za taki odczyt?</dt>
+    <dd>Nie ma takiego mechanizmu — Optima to aplikacja na SQL Server, nie blokuje za odczyt bazy. Ostry firmowy EDR może odnotować w logu nową usługę łączącą się z bazą — to wpis w logu, nie blokada. Stąd zdanie uprzedzenia w sekcji 6.</dd>
+
+    <dt>Co przy aktualizacji Optimy?</dt>
+    <dd>Comarch potrafi zmienić schemat bazy przy większej aktualizacji. Po takiej aktualizacji trzeba sprawdzić, czy widoki <code>nova.*</code> nadal działają (kilkanaście minut, jest lista kontrolna). Rdzeń używanych tabel jest stabilny od lat.</dd>
+
+    <dt>Co widzi konto konektora?</dt>
+    <dd>Wyłącznie 9 widoków w schemacie <code>nova</code> (towary, ceny, kontrahenci, rezerwacje, stany, historia sprzedaży) — z zawężonym zestawem kolumn. Nie widzi kadr, płac ani reszty bazy.</dd>
+
+    <dt>Gdzie są dane klientów i czy to zgodne z RODO?</dt>
+    <dd>W chmurze w regionie UE, z regułami dostępu (każdy klient widzi tylko swoje). Synchronizujemy minimum potrzebne aplikacji, nie cały eksport. Dane kontaktowe (telefon = login) to dane osobowe — obejmuje je standardowa umowa powierzenia z dostawcą chmury.</dd>
+  </dl>
+
+  <hr>
+  <p class="foot">Pliki i szczegóły techniczne: repozytorium projektu (skrypty w <code>connector/sql/</code>, dokumentacja w <code>docs/</code>: architektura, kontrakt danych, runbook wdrożenia, zasady bezpieczeństwa). Skrypt diagnostyczny z instrukcją krok po kroku: <strong>materdyjo.github.io/nova-partner-app/instrukcja.html</strong>. W razie pytań technicznych — kontakt z developerem projektu.</p>
+
+</div>
+
+</body>
+</html>
