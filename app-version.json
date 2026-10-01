@@ -1,8 +1,8 @@
 {
   "android": {
-    "version": "1.0.7",
-    "build": 9,
+    "version": "1.0.9",
+    "build": 11,
     "url": "https://github.com/Materdyjo/nova-partner-app/releases/latest/download/nova-partner-latest.apk",
-    "notes": "Pełna oferta promocji ze zdjęciami, poprawki powiadomień na telefon i nawigacji między zakładkami, aktualna data w cenniku."
+    "notes": ""
   }
 }
