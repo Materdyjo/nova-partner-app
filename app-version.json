@@ -1,8 +1,8 @@
 {
   "android": {
-    "version": "1.0.12",
-    "build": 14,
+    "version": "1.0.14",
+    "build": 16,
     "url": "https://github.com/Materdyjo/nova-partner-app/releases/latest/download/nova-partner-latest.apk",
-    "notes": ""
+    "notes": "Nowość: Moje płatności – faktury, terminy i produkty na fakturze. Zakładka Mój profil. Poprawki."
   }
 }
